@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form name="form" action="fakeserver.com/users" method="post">
+      <input
+        pattern="[a-z A-Z]+"
+        type="text"
+        name="name"
+        id="name"
+        placeholder="Ingrese su nombre"
+        minlength="4"
+        title="Solo pueden ingresarse letras"
+        required
+      />
+      <input
+        type="number"
+        placeholder="Ingrese su edad"
+        pattern=""
+        name="name"
+        title="Ingresá un número entre 18 y 99"
+        id="name"
+        min="18"
+        max="99"
+        required
+      />
+      <input
+        type="text"
+        name="email"
+        id="email"
+        placeholder="Ingrese su email"
+        pattern=".+@gmail\.com"
+        required
+      />
+      <input
+        type="password"
+        name="password"
+        id="password"
+        placeholder="Ingrese su contraseña"
+        required
+      />
+      <input type="submit" value="Guardar Datos" />
+    </form>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Morganite';
+  src: url('../fonts/Morganite/Morganite-Bold.ttf');
+}
+
+body {
+  font-family: 'Montserrat';
+  scroll-behavior: smooth;
+}
+
+#qty::-webkit-inner-spin-button,
+#qty::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
