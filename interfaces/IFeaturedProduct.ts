@@ -1,4 +1,4 @@
-export interface IFeaturedProduct {
+export interface IProduct {
     product: Product;
 }
 
@@ -17,13 +17,27 @@ export interface IProductRequest {
     price_overpriced: number;
     description:     string;
     categories:      Categories;
-    product_colors:   ProductColor;
+    colors: Colors;
     image_color:      ImageColor;
     image_gallery: ProductColor;
 }
 
 interface ImageColor {
     data: ImageData
+}
+
+export interface Colors {
+    data: ColorsDatum[];
+}
+
+export interface ColorsDatum {
+    id:         string;
+    attributes: TentacledAttributes;
+}
+
+export interface TentacledAttributes {
+    name:       string;
+    color_image: ImageColor;
 }
 
 export interface Categories {

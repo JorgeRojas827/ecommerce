@@ -1,4 +1,4 @@
-export interface IFeaturedProducts {
+export interface IProducts {
     products: Products;
 }
 

@@ -2,11 +2,13 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { ProductAttributes } from '../../interfaces/IFeaturedProducts'
 import { Button } from './Button'
+import { useShoppingCart } from '../../hooks/useShoppingCart'
 
 interface IProps extends ProductAttributes {
   id: string
   dark?: boolean
   small?: boolean
+  imageDark?: boolean
   addCart?: boolean
 }
 
@@ -16,6 +18,7 @@ export const Card = ({
   small = false,
   image_color,
   title,
+  imageDark,
   price,
   dark = true,
   addCart = true,
@@ -41,7 +44,11 @@ export const Card = ({
             <Link href={`/items/${id}`}>
               <figure>
                 <img
-                  src={`http://localhost:1337${image.data.attributes.url}`}
+                  src={`http://localhost:1337${
+                    imageDark
+                      ? image.data.attributes.url
+                      : image_color.data.attributes.url
+                  }`}
                 />
               </figure>
             </Link>
@@ -87,13 +94,6 @@ export const Card = ({
         >
           ${price}.00
         </p>
-        {addCart && (
-          <Button
-            dark={dark}
-            extraClass="self-center px-2 sm:px-5 lg:px-7 xl:px-10"
-            title="add to cart"
-          />
-        )}
       </div>
     </div>
   )

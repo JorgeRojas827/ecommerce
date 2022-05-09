@@ -1,19 +1,24 @@
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next'
 import React from 'react'
 import client from '../../apollo-client'
-import { IFeaturedProducts } from '../../interfaces/IFeaturedProducts'
+import { IProducts } from '../../interfaces/IFeaturedProducts'
 import { GET_FEATURED_PRODUCT_ID } from '../../helpers/queries'
 import { ParsedUrlQuery } from 'querystring'
 import { Tag } from '../../components/UI/Tag'
-import { IFeaturedProduct } from '../../interfaces/IFeaturedProduct'
+import { IProduct } from '../../interfaces/IFeaturedProduct'
 import { sizes } from '../../helpers/lists'
 import { Size } from '../../components/UI/Size'
 import { Cantity } from '../../components/UI/Cantity'
 import { Button } from '../../components/UI/Button'
 import { GET_PRODUCTS_ID } from '../../helpers/queries'
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useShoppingCart } from '../../hooks/useShoppingCart'
+import { ICartProduct } from '../../interfaces/ICartProduct'
 
 interface IProps {
-  data: IFeaturedProduct
+  data: IProduct
 }
 
 const Product = ({
@@ -23,6 +28,19 @@ const Product = ({
     },
   },
 }: IProps) => {
+  const [image, setImage] = useState<string>(
+    `http://localhost:1337${attributes.image_color.data.attributes.url}`
+  )
+  const { addProductToCart } = useShoppingCart()
+  const { push } = useRouter()
+  const [product, setProduct] = useState<ICartProduct>({
+    size: 'S',
+    color: attributes.colors.data[0].id,
+    cantity: 1,
+    name: attributes.title,
+    price: attributes.price,
+  })
+
   return (
     <div className="mx-auto flex flex-col justify-center border-primary lg:grid lg:flex-none lg:grid-cols-3 lg:place-content-center lg:border-y">
       <div
@@ -39,18 +57,24 @@ const Product = ({
         className="mt-5 flex justify-evenly lg:order-2 lg:mt-0 lg:flex-col lg:items-center lg:justify-center lg:space-y-4 lg:border-r lg:border-primary lg:py-10"
       >
         <figure className="flex">
-          <img
-            className="w-64 object-cover lg:w-72"
-            src={`http://localhost:1337${attributes.image_color.data.attributes.url}`}
-          />
+          <img className="w-64 object-cover lg:w-72" src={image} />
         </figure>
         <div id="gallery" className="flex justify-center">
           <figure className="flex flex-col justify-around lg:flex-row lg:space-x-4">
             {attributes.image_gallery.data.map((color) => {
               return (
-                <img
+                <motion.img
                   key={color.attributes.url}
-                  className="w-12 rounded-md opacity-60 lg:w-16"
+                  className="w-12 cursor-pointer rounded-md opacity-60 lg:w-16"
+                  whileHover={{
+                    opacity: 1,
+                    transition: {
+                      duration: 0.02,
+                    },
+                  }}
+                  onClick={() =>
+                    setImage(`http://localhost:1337${color.attributes.url}`)
+                  }
                   src={`http://localhost:1337${color.attributes.url}`}
                 />
               )
@@ -89,7 +113,13 @@ const Product = ({
             Tags
           </h4>
           {attributes.categories.data.map(({ id, attributes: { name } }) => {
-            return <Tag name={name} key={id} />
+            return (
+              <Tag
+                name={name}
+                key={id}
+                clickEvent={() => push(`/shop?filter=${id}`)}
+              />
+            )
           })}
         </div>
       </div>
@@ -104,8 +134,15 @@ const Product = ({
           <div id="size" className="mt-3 flex flex-col space-y-1 lg:space-y-3">
             <h3>Size:</h3>
             <div className="flex space-x-1 lg:space-x-3">
-              {sizes.map((size) => {
-                return <Size size={size} />
+              {sizes.map((size, i) => {
+                return (
+                  <Size
+                    clickEvent={() => setProduct({ ...product, size })}
+                    clicked={product.size == size ? true : false}
+                    size={size}
+                    key={i}
+                  />
+                )
               })}
             </div>
           </div>
@@ -114,24 +151,38 @@ const Product = ({
             className="flex flex-col items-start space-y-1 lg:space-y-3"
           >
             <h3>Qty:</h3>
-            <Cantity />
+            <Cantity
+              cantity={product.cantity}
+              setCantity={(cantity: number) =>
+                setProduct({ ...product, cantity })
+              }
+            />
           </div>
         </div>
         <div id="colors" className="mt-3 space-y-1 lg:mt-5 lg:space-y-3">
           <h3>Colors:</h3>
           <div className="flex space-x-3">
-            {attributes.product_colors.data.map(({ attributes }, i) => {
+            {attributes.colors.data.map(({ attributes, id }, i) => {
               return (
-                <div
+                <motion.div
+                  whileTap={{
+                    scale: 0.95,
+                    transition: {
+                      duration: 0.1,
+                    },
+                  }}
                   key={i}
-                  className="grid w-10 place-content-center rounded-full border border-primary p-0.5"
+                  onClick={() => setProduct({ ...product, color: id })}
+                  className={`grid w-10 cursor-pointer place-content-center rounded-full border ${
+                    product.color == id && 'border-primary'
+                  }  p-0.5`}
                 >
                   <img
                     className="rounded-full object-cover"
-                    src={`http://localhost:1337${attributes.url}`}
+                    src={`http://localhost:1337${attributes.color_image.data.attributes.url}`}
                     alt=""
                   />
-                </div>
+                </motion.div>
               )
             })}
           </div>
@@ -139,6 +190,7 @@ const Product = ({
         <div className="mt-3 grid place-content-center pb-8 lg:mt-5">
           <Button
             title="add to cart"
+            action={() => addProductToCart(product)}
             extraClass="self-center px-2 sm:px-5 lg:px-7 xl:px-10"
           />
         </div>
@@ -154,7 +206,7 @@ interface IParams extends ParsedUrlQuery {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { data } = await client.query<IFeaturedProducts>({
+  const { data } = await client.query<IProducts>({
     query: GET_PRODUCTS_ID,
   })
 
@@ -175,7 +227,7 @@ export const getStaticProps: GetStaticProps = async (
 ) => {
   const { product } = context.params as IParams
 
-  const { data } = await client.query<IFeaturedProduct>({
+  const { data } = await client.query<IProduct>({
     query: GET_FEATURED_PRODUCT_ID(Number(product)),
   })
 

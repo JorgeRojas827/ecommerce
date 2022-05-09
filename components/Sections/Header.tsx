@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import { GiHamburgerMenu } from 'react-icons/gi'
+import { useShoppingCart } from '../../hooks/useShoppingCart'
 
 export const Header = () => {
+  const { totalProducts } = useShoppingCart()
+
   return (
     <header className="mx-auto max-w-7xl">
       <nav className="flex items-center justify-between py-5 px-10 font-montserrat font-semibold uppercase">
@@ -25,7 +28,7 @@ export const Header = () => {
           <Link href="/objetive">
             <li className="cursor-pointer">Objetive</li>
           </Link>
-          <li className="cursor-pointer">Cart (0)</li>
+          <li className="cursor-pointer">Cart ({totalProducts})</li>
         </ul>
         <figure className="block md:hidden">
           <GiHamburgerMenu size={30} color="#303030" />

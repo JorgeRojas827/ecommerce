@@ -1,16 +1,20 @@
 import React from 'react'
 import { useState } from 'react'
 import { BsChevronUp, BsChevronDown } from 'react-icons/bs'
+import { ICartProduct } from '../../interfaces/ICartProduct'
 
-export const Cantity = () => {
-  const [cantity, setCantity] = useState(0)
+interface IProps {
+  cantity: number
+  setCantity: (cantity: number) => void
+}
 
+export const Cantity = ({ cantity, setCantity }: IProps) => {
   return (
     <div className="relative">
       <input
         id="qty"
         value={cantity}
-        onChange={(e) => setCantity(Number(e.target.value))}
+        onChange={() => setCantity(cantity)}
         className="w-20 rounded-full border border-primary py-2 pl-4 font-semibold"
         min={1}
         max={12}

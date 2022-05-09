@@ -1,18 +1,38 @@
 import React from 'react'
 import { marqueeEffectLeft } from '../../helpers/animations'
 import { motion } from 'framer-motion'
-import { useQuery } from '@apollo/client'
-import { GET_CATEGORIES, GET_SHOP_PRODUCTS } from '../../helpers/queries'
-import { ICategories } from '../../interfaces/ICategories'
 import { Tag } from '../UI/Tag'
-import { IFeaturedProducts } from '../../interfaces/IFeaturedProducts'
 import { Card } from '../UI/Card'
 import { Button } from '../UI/Button'
 import Link from 'next/link'
+import { useProducts } from '../../hooks/useProducts'
+import { useCategories } from '../../hooks/useCategories'
+import { useState, useEffect } from 'react'
+import { IProducts } from '../../interfaces/IFeaturedProducts'
+import { useRouter } from 'next/router'
 
 export const ShopSection = () => {
-  const { data: categories } = useQuery<ICategories>(GET_CATEGORIES)
-  const { data: products } = useQuery<IFeaturedProducts>(GET_SHOP_PRODUCTS)
+  const { getProductsByCategory, getProductsByPrice, getShopProducts } =
+    useProducts()
+  const [shop, setShop] = useState<IProducts>()
+  const [selectedTag, setTag] = useState<string>()
+  const { categories } = useCategories()
+  const router = useRouter()
+  const { filter } = router.query
+
+  useEffect(() => {
+    filter ? toggleCategories(filter.toString()) : getShopProducts(setShop)
+  }, [])
+
+  const toggleCategories = async (id: string) => {
+    const { data } = await getProductsByCategory(Number(id))
+    setShop(data)
+    setTag(id)
+  }
+  const togglePrice = async (from: number, to: number) => {
+    const { data } = await getProductsByPrice(from, to)
+    setShop(data)
+  }
 
   return (
     <div className="overflow-hidden">
@@ -41,9 +61,25 @@ export const ShopSection = () => {
             <div className="flex flex-wrap justify-around lg:flex-col lg:items-start lg:justify-start lg:space-y-3">
               {categories?.categories.data.map(
                 ({ attributes: { name }, id }) => {
-                  return <Tag border={false} name={name} key={id} />
+                  return (
+                    <Tag
+                      clickEvent={() => toggleCategories(id)}
+                      border={false}
+                      clicked={selectedTag == id ? true : false}
+                      name={name}
+                      key={id}
+                    />
+                  )
                 }
               )}
+              <Tag
+                clickEvent={() => {
+                  getShopProducts(setShop)
+                  setTag('')
+                }}
+                border={false}
+                name="Clear filters"
+              />
             </div>
           </div>
           <div
@@ -52,31 +88,60 @@ export const ShopSection = () => {
           >
             <h6 className="text-2xl font-semibold">Price</h6>
             <div className="flex justify-around lg:w-1/2 lg:flex-col lg:space-y-6">
-              <Tag name="$50 - $100" />
-              <Tag name="$100 - $150" />
-              <Tag name="$150 - $200" />
+              <Tag
+                name="$0 - $50"
+                clickEvent={() => {
+                  togglePrice(0, 50)
+                  setTag('50')
+                }}
+                clicked={selectedTag == '50' ? true : false}
+              />
+              <Tag
+                name="$50 - $100"
+                clickEvent={() => {
+                  togglePrice(50, 100)
+                  setTag('100')
+                }}
+                clicked={selectedTag == '100' ? true : false}
+              />
+              <Tag
+                name="$100 - $150"
+                clickEvent={() => {
+                  togglePrice(100, 150)
+                  setTag('150')
+                }}
+                clicked={selectedTag == '150' ? true : false}
+              />
             </div>
           </div>
         </div>
         <div className="col-span-3 grid border-t border-l border-primary border-opacity-20 md:grid-cols-2 lg:grid-cols-3">
-          {products?.products.data.map(
-            ({ id, attributes: { title, image_color, image, price } }) => {
-              return (
-                <div className="border-b border-r border-primary border-opacity-20 py-8">
-                  <Card
-                    dark={false}
-                    small={true}
+          {shop?.products.data.length! > 0 ? (
+            shop?.products.data.map(
+              ({ id, attributes: { title, image_color, image, price } }) => {
+                return (
+                  <div
                     key={id}
-                    id={id}
-                    title={title}
-                    image={image}
-                    image_color={image_color}
-                    price={price}
-                    addCart={false}
-                  />
-                </div>
-              )
-            }
+                    className="border-b border-r border-primary border-opacity-20 py-8"
+                  >
+                    <Card
+                      dark={false}
+                      small={true}
+                      id={id}
+                      title={title}
+                      image={image}
+                      image_color={image_color}
+                      price={price}
+                      addCart={false}
+                    />
+                  </div>
+                )
+              }
+            )
+          ) : (
+            <div className="col-span-3 flex items-center justify-center">
+              <h1>No se encontraron productos</h1>
+            </div>
           )}
         </div>
       </div>

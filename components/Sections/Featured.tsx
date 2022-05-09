@@ -2,15 +2,11 @@ import { Carousel } from 'react-responsive-carousel'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Card } from '../UI/Card'
 import { useWindowSize } from '../../hooks/useWindowSize'
-import { useQuery } from '@apollo/client'
-import { IFeaturedProducts } from '../../interfaces/IFeaturedProducts'
-import { GET_FEATURED_PRODUCTS } from '../../helpers/queries'
+import { useProducts } from '../../hooks/useProducts'
 
 export const FeaturedSection = () => {
   const { width } = useWindowSize()
-  const { data: featuredProducts } = useQuery<IFeaturedProducts>(
-    GET_FEATURED_PRODUCTS
-  )
+  const { featuredProducts } = useProducts()
 
   return (
     <div id="featured" className=" bg-bkg py-10 px-10 md:py-20">
@@ -43,6 +39,7 @@ export const FeaturedSection = () => {
                 title={title}
                 price={price}
                 image={image}
+                imageDark
                 id={id}
                 image_color={image_color}
               />
