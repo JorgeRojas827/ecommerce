@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { addProduct } from '../redux/slices/cartSlice'
+import { addProduct, deleteProduct } from '../redux/slices/cartSlice'
 import { ICartProduct } from '../interfaces/ICartProduct'
 
 export const useShoppingCart = () => {
@@ -13,8 +13,13 @@ export const useShoppingCart = () => {
     dispatch(addProduct(product))
   }
 
+  const removeProductFromCart = (product: ICartProduct) => {
+    dispatch(deleteProduct(product))
+  }
+
   return {
     addProductToCart,
+    removeProductFromCart,
     detailCart,
     shoppingCartProducts,
   }

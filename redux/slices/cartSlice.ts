@@ -17,7 +17,7 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addProduct: (state, { payload }: PayloadAction<ICartProduct>) => {
-      let currentProduct = state.products.find(e => e.name == payload.name && e.size == payload.size);
+      let currentProduct = state.products.find(e => e.name == payload.name && e.size == payload.size && e.color == payload.color);
       if (currentProduct) {
         currentProduct.cantity += payload.cantity;
       } else {
@@ -26,10 +26,20 @@ export const cartSlice = createSlice({
       state.details.count = state.products.length 
       state.details.subtotal += payload.price * payload.cantity
     },
+    deleteProduct: (state, { payload }: PayloadAction<ICartProduct>) => {
+      console.log(payload);
+      console.log(state.products);
+      
+      console.log(state.products.indexOf(payload));
+      console.log(state.products.includes(payload));
+      
+      state.products.splice(state.products.indexOf(payload) + 1, 1)
+      state.details.count = state.products.length 
+    }
   },
 })
 
-export const { addProduct } = cartSlice.actions
+export const { addProduct, deleteProduct } = cartSlice.actions
 
 export const selectProducts = (state: RootState) => state.shoppingCart
 

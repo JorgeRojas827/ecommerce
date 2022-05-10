@@ -6,4 +6,5 @@ export interface ICartProduct {
     image: string;
     color: string;
     price: number;
+    category: string
 }

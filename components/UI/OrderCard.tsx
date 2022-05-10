@@ -1,5 +1,6 @@
 import React from 'react'
 import { ICartProduct } from '../../interfaces/ICartProduct'
+import { firstLetterUppercase } from '../../helpers/functions'
 
 interface IProps {
   product: ICartProduct
@@ -12,7 +13,7 @@ export const OrderCard = ({
     <div className="grid grid-cols-3 place-content-center space-x-5">
       <figure>
         <img
-          className=" rounded-md"
+          className="rounded-md"
           src={`http://localhost:1337${image}`}
           alt=""
         />
@@ -25,9 +26,7 @@ export const OrderCard = ({
           </h6>
           <h6>
             Color{' '}
-            <span className="font-semibold">
-              {color.charAt(0).toUpperCase() + color.slice(1)}
-            </span>
+            <span className="font-semibold">{firstLetterUppercase(color)}</span>
           </h6>
         </div>
         <h2>

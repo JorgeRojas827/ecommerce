@@ -16,6 +16,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useShoppingCart } from '../../hooks/useShoppingCart'
 import { ICartProduct } from '../../interfaces/ICartProduct'
+import { removeLastLetter } from '../../helpers/functions'
 
 interface IProps {
   data: IProduct
@@ -40,7 +41,10 @@ const Product = ({
     image: attributes.image_color.data.attributes.url,
     name: attributes.title,
     price: attributes.price,
+    category: removeLastLetter(attributes.categories.data[0].attributes.name),
   })
+
+  console.log(product.color)
 
   return (
     <div className="mx-auto flex flex-col justify-center border-primary lg:grid lg:flex-none lg:grid-cols-3 lg:place-content-center lg:border-y">
@@ -173,9 +177,10 @@ const Product = ({
                     },
                   }}
                   key={i}
-                  onClick={() =>
+                  onClick={() => {
                     setProduct({ ...product, color: attributes.name })
-                  }
+                    console.log(attributes.name)
+                  }}
                   className={`grid w-10 cursor-pointer place-content-center rounded-full border ${
                     product.color == attributes.name && 'border-primary'
                   }  p-0.5`}
