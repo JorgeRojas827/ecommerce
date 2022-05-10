@@ -17,3 +17,17 @@ body {
   -webkit-appearance: none;
   margin: 0;
 }
+
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #666666;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+}

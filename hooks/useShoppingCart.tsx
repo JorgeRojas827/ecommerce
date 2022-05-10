@@ -4,7 +4,10 @@ import { ICartProduct } from '../interfaces/ICartProduct'
 
 export const useShoppingCart = () => {
   const dispatch = useAppDispatch()
-  const { count: totalProducts } = useAppSelector((state) => state.shoppingCart)
+  const { details: detailCart } = useAppSelector((state) => state.shoppingCart)
+  const { products: shoppingCartProducts } = useAppSelector(
+    (state) => state.shoppingCart
+  )
 
   const addProductToCart = (product: ICartProduct) => {
     dispatch(addProduct(product))
@@ -12,6 +15,7 @@ export const useShoppingCart = () => {
 
   return {
     addProductToCart,
-    totalProducts,
+    detailCart,
+    shoppingCartProducts,
   }
 }

@@ -3,24 +3,28 @@ import { RootState } from '../store';
 import { ICartProduct } from '../../interfaces/ICartProduct';
 
 interface ICartProductSlice {
-  product: ICartProduct[],
-  count: number
+  products: ICartProduct[],
+  details: {
+    count: number,
+    subtotal: number
+  }
 }
 
-const initialState: ICartProductSlice = {product: [], count: 0,}
+const initialState: ICartProductSlice = {products: [], details: {count: 0, subtotal: 0}}
 
 export const cartSlice = createSlice({
   name: 'shopping_cart',
   initialState,
   reducers: {
     addProduct: (state, { payload }: PayloadAction<ICartProduct>) => {
-      let currentProduct = state.product.find(e => e.name == payload.name && e.size == payload.size);
+      let currentProduct = state.products.find(e => e.name == payload.name && e.size == payload.size);
       if (currentProduct) {
         currentProduct.cantity += payload.cantity;
       } else {
-        state.product.push(payload);
+        state.products.push(payload);
       }
-      state.count += payload.cantity
+      state.details.count = state.products.length 
+      state.details.subtotal += payload.price * payload.cantity
     },
   },
 })

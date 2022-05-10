@@ -20,7 +20,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="relative flex justify-center overflow-hidden md:mt-2">
-        <figure className="z-50">
+        <figure className="z-40">
           <img
             src="/assets/hero-image.png"
             className="w-64 md:w-auto md:scale-100"

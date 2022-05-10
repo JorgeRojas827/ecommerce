@@ -35,8 +35,9 @@ const Product = ({
   const { push } = useRouter()
   const [product, setProduct] = useState<ICartProduct>({
     size: 'S',
-    color: attributes.colors.data[0].id,
+    color: attributes.colors.data[0].attributes.name,
     cantity: 1,
+    image: attributes.image_color.data.attributes.url,
     name: attributes.title,
     price: attributes.price,
   })
@@ -172,9 +173,11 @@ const Product = ({
                     },
                   }}
                   key={i}
-                  onClick={() => setProduct({ ...product, color: id })}
+                  onClick={() =>
+                    setProduct({ ...product, color: attributes.name })
+                  }
                   className={`grid w-10 cursor-pointer place-content-center rounded-full border ${
-                    product.color == id && 'border-primary'
+                    product.color == attributes.name && 'border-primary'
                   }  p-0.5`}
                 >
                   <img
