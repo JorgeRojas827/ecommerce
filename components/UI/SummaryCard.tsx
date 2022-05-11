@@ -11,10 +11,8 @@ interface IProps {
 
 export const SummaryCard = ({ product }: IProps) => {
   const { image, cantity, color, name, price, size, category } = product
-  console.log(product)
 
-  var [newCantity, setCantity] = useState<number>(cantity)
-  const { removeProductFromCart } = useShoppingCart()
+  const { removeProductFromCart, changeCantity } = useShoppingCart()
 
   return (
     <div className="flex w-full justify-between">
@@ -39,15 +37,15 @@ export const SummaryCard = ({ product }: IProps) => {
       <div className="grid place-content-center">{size}</div>
       <div className="flex items-center justify-center space-x-2">
         <div className="rounded-lg border border-[#303030] px-3 py-1">
-          {newCantity}
+          {cantity}
         </div>
         <div className="flex flex-col space-y-1">
           <IoAdd
-            onClick={() => setCantity(newCantity++)}
+            onClick={() => changeCantity('add', product)}
             className="cursor-pointer"
           />
           <IoRemove
-            onClick={() => setCantity(newCantity--)}
+            onClick={() => changeCantity('substract', product)}
             className="cursor-pointer"
           />
         </div>

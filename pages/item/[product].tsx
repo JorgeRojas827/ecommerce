@@ -44,8 +44,6 @@ const Product = ({
     category: removeLastLetter(attributes.categories.data[0].attributes.name),
   })
 
-  console.log(product.color)
-
   return (
     <div className="mx-auto flex flex-col justify-center border-primary lg:grid lg:flex-none lg:grid-cols-3 lg:place-content-center lg:border-y">
       <div
@@ -179,7 +177,6 @@ const Product = ({
                   key={i}
                   onClick={() => {
                     setProduct({ ...product, color: attributes.name })
-                    console.log(attributes.name)
                   }}
                   className={`grid w-10 cursor-pointer place-content-center rounded-full border ${
                     product.color == attributes.name && 'border-primary'

@@ -1,16 +1,26 @@
 import React from 'react'
 import { ICartProduct } from '../../interfaces/ICartProduct'
 import { firstLetterUppercase } from '../../helpers/functions'
+import { IoCloseSharp } from 'react-icons/io5'
+import { useShoppingCart } from '../../hooks/useShoppingCart'
 
 interface IProps {
   product: ICartProduct
 }
 
-export const OrderCard = ({
-  product: { image, cantity, color, name, price, size },
-}: IProps) => {
+export const OrderCard = ({ product }: IProps) => {
+  const { image, cantity, color, name, price, size } = product
+  const { removeProductFromCart } = useShoppingCart()
+
   return (
-    <div className="grid grid-cols-3 place-content-center space-x-5">
+    <div className="relative grid grid-cols-3 place-content-center space-x-5">
+      <div className="absolute top-12 grid w-3 place-content-center">
+        <IoCloseSharp
+          size={16}
+          className="cursor-pointer"
+          onClick={() => removeProductFromCart(product)}
+        />
+      </div>
       <figure>
         <img
           className="rounded-md"
