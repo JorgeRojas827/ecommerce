@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store';
 import { ICartProduct } from '../../interfaces/ICartProduct';
 
@@ -27,13 +27,8 @@ export const cartSlice = createSlice({
       state.details.subtotal += payload.price * payload.cantity
     },
     deleteProduct: (state, { payload }: PayloadAction<ICartProduct>) => {
-      console.log(payload);
-      console.log(state.products);
       
-      console.log(state.products.indexOf(payload));
-      console.log(state.products.includes(payload));
-      
-      state.products.splice(state.products.indexOf(payload) + 1, 1)
+      state.products.splice(current(state).products.indexOf(payload), 1)
       state.details.count = state.products.length 
     }
   },
